@@ -12,15 +12,14 @@ async function connectMongoDB() {
     },
   });
 
-  let connection;
   try {
-    connection = await client.connect();
+    await client.connect();
     console.log("Connected successfully to MongoDB server");
   } catch (e) {
     console.error(e);
   }
 
-  return connection;
+  return client;
 }
 
 export default connectMongoDB;
