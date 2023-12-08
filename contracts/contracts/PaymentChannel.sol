@@ -5,14 +5,18 @@ pragma solidity ^0.8.9;
 // import "hardhat/console.sol";
 
 contract PaymentChannel {
-    address public payer;
-    address public payee;
-    uint256 public expiration;
+    // address public payer;
+    // address public payee;
+    // uint256 public expiration;
 
-    constructor(address _payer, address _payee, uint256 duration) payable {
-        payer = _payer;
-        payee = _payee;
-        expiration = block.timestamp + duration;
+    // constructor(address _payer, address _payee, uint256 duration) payable {
+    //     payer = _payer;
+    //     payee = _payee;
+    //     expiration = block.timestamp + duration;
+    // }
+
+    function temporary() public pure returns (uint256) {
+        return 1;
     }
 
     // function close(uint256 amount, bytes memory signature) public {
