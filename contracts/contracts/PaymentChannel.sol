@@ -3,61 +3,102 @@ pragma solidity ^0.8.9;
 
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-contract PaymentChannel {
-    // address public payer;
-    // address public payee;
-    // uint256 public expiration;
+contract PaymentChannelManager {
+  IERC20 token;
+  uint256 challengePeriod; // in blocks
 
-    // constructor(address _payer, address _payee, uint256 duration) payable {
-    //     payer = _payer;
-    //     payee = _payee;
-    //     expiration = block.timestamp + duration;
-    // }
+  enum ChannelStatus {
+    CREATED,
+    ACTIVE,
+    PENDING,
+    CLOSED
+  }
 
-    function temporary() public pure returns (uint256) {
-        return 1;
-    }
+  struct PaymentChannel {
+    address walletA;
+    address proxyA;
+    uint balanceA;
+    address walletB;
+    address proxyB;
+    uint balanceB;
+    bytes metadata;
+    ChannelStatus status;
+  }
 
-    // function close(uint256 amount, bytes memory signature) public {
-    // require(msg.sender == payee);
-    // require(isValidSignature(amount, signature));
+  struct ChannelState {
+    bytes32 channelId;
+    uint balanceA;
+    uint balanceB;
+    bytes metadata;
+  }
 
-    // console.log("amount: %s", amount);
-    // console.log("address(this).balance: %s", address(this).balance);
-    // console.log("payee: %s", payee);
-    // console.log("payer: %s", payer);
+  mapping(bytes32 => PaymentChannel) channels;
 
-    // console.log("address(this).balance >= amount: %s", address(this).balance >= amount);
-    // console.log("payee.send(amount): %s", payee.send(amount));
+  constructor(address _tokenAddress, uint256 _challengePeriod) payable {
+    token = IERC20(_tokenAddress);
+    challengePeriod = _challengePeriod;
+  }
 
-    // console.log("address(this).balance: %s", address(this).balance);
+  function getChannelId(PaymentChannel calldata _pc) public pure returns (bytes32 channelId) {
+    channelId = keccak256(
+      abi.encode(_pc.walletA, _pc.proxyA, _pc.balanceA, _pc.walletB, _pc.proxyB, _pc.balanceB, _pc.metadata)
+    );
+  }
 
-    // console.log("address(this).balance >= amount: %s", address(this).balance >= amount);
-    // console.log("payee.send(amount): %s", payee.send(amount));
+  function getChannelState(bytes32 _channelId) public returns (ChannelState state) {
+    PaymentChannel storage pc = channels[_channelId];
+    state = ChannelState(_channelId, pc.balanceA, pc.balanceB, pc.metadata);
+  }
 
-    // console.log("address(this).balance: %s", address(this).balance);
+  function createChannel(
+    address _walletA,
+    address _proxyA,
+    address _walletB,
+    address _proxyB,
+    uint _amount
+  ) public returns (bytes32 channelId) {
+    token.transferFrom(_walletA, address(this), _amount);
+    token.transferFrom(_walletB, address(this), _amount);
+    PaymentChannel memory pc = PaymentChannel(
+      _walletA,
+      _proxyA,
+      _amount,
+      _walletB,
+      _proxyB,
+      _amount,
+      "",
+      ChannelStatus.CREATED
+    );
 
-    // console.log("address(this).balance >= amount: %s", address(this).balance >= amount);
-    // console.log("payee.send(amount): %s", payee.send(amount));
+    channelId = getChannelId(pc);
+    channels[channelId] = pc;
+  }
 
-    // console.log("address(this).balance: %s", address(this).balance);
+  function isValidState(
+    bytes32 _channelId,
+    ChannelState _channelState,
+    bytes calldata _sigA,
+    bytes calldata _sigB
+  ) public returns (bool validity) {
+    require(_channelId == _channelState.channelId, "Invalid channelId");
+    PaymentChannel memory pc = channels[_channelId];
+    require(pc.balanceA + pc.balanceB == _channelState.balanceA + _channelState.balanceB, "Balance mismatch");
+    bytes32 stateHash = keccak256(
+      abi.encode(pc.walletA, pc.proxyA, pc.balanceA, pc.walletB, pc.proxyB, pc.balanceB, pc.metadata)
+    );
+    isValidSignature(pc.proxyA, stateHash, _sigA);
+    isValidSignature(pc.proxyB, stateHash, _sigB);
+  }
 
-    // console.log("address(this).balance >= amount: %s", address(this).balance >= amount);
-    // console.log("payee.send(amount): %s", payee.send(amount));
+  function closeChannel(bytes32 _channelId) public returns (ChannelStatus status) {
+    PaymentChannel memory pc = channels[_channelId];
+  }
 
-    // console.log("address(this).balance: %s", address(this).balance);
-
-    // console.log("address(this).balance >= amount: %s", address(this).balance >= amount);
-    // console.log("payee.send(amount): %s", payee.send(amount));
-
-    // console.log("address(this).balance: %s", address(this).balance);
-
-    // console.log("address(this).balance >= amount: %s", address(this).balance >= amount);
-    // console.log("payee.send(amount): %s", payee.send(amount));
-
-    // console.log("address(this).balance: %s", address(this).balance);
-
-    // console.log("address(this
-    // }
+  function isValidSignature(address signer, bytes32 hash, bytes memory signature) internal view returns (bool) {
+    (address recovered, ECDSA.RecoverError error, ) = ECDSA.tryRecover(hash, signature);
+    return error == ECDSA.RecoverError.NoError && recovered == signer;
+  }
 }
