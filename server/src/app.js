@@ -4,7 +4,7 @@ dotenv.config();
 import {
   createChannelController,
   getChannelController,
-} from "../controllers/channelController.js";
+} from "./controllers/channelController.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
