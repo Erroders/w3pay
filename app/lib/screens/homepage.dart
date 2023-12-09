@@ -63,11 +63,16 @@ class _HomepageState extends State<Homepage> {
 
                 Row(
                   children: [
-                    const Expanded(
-                      child: BoxCard(
-                        text: 'Receive',
-                        icon: 'assets/svgs/receive.svg',
-                        color: PRIMARY_COLOR_2,
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.onReceive();
+                        },
+                        child: const BoxCard(
+                          text: 'Receive',
+                          icon: 'assets/svgs/receive.svg',
+                          color: PRIMARY_COLOR_2,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
