@@ -6,9 +6,9 @@ dataSources:
     name: Contract
     network: mumbai
     source:
-      address: "0x02964bfab37763AfC8df4dbFEa67d8965765132E"
       abi: Contract
-      startBlock: 43361320
+      address: "0xB30ccf958577df6a59f1592Fc6703519F0584E25"
+      startBlock: 43368677
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -19,6 +19,7 @@ dataSources:
         - name: Contract
           file: ./abis/Contract.json
       eventHandlers:
-        - event: ChannelUpdate(indexed address,indexed address,(address,address,uint256,address,address,uint256,bytes,uint8))
+        - event: ChannelUpdate(indexed bytes32,indexed address,indexed
+            address,(address,address,uint256,address,address,uint256,bytes,uint8))
           handler: handleChannelUpdate
       file: ./src/contract.ts

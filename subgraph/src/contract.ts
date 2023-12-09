@@ -1,24 +1,35 @@
-import { ChannelUpdate as ChannelUpdateEvent } from "../generated/Contract/Contract"
-import { ChannelUpdate } from "../generated/schema"
+import { ChannelUpdate as ChannelUpdateEvent } from "../generated/Contract/Contract";
+import { Channel } from "../generated/schema";
 
 export function handleChannelUpdate(event: ChannelUpdateEvent): void {
-  let entity = new ChannelUpdate(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.walletA = event.params.walletA
-  entity.walletB = event.params.walletB
-  entity.pc_walletA = event.params.pc.walletA
-  entity.pc_proxyA = event.params.pc.proxyA
-  entity.pc_balanceA = event.params.pc.balanceA
-  entity.pc_walletB = event.params.pc.walletB
-  entity.pc_proxyB = event.params.pc.proxyB
-  entity.pc_balanceB = event.params.pc.balanceB
-  entity.pc_metadata = event.params.pc.metadata
-  entity.pc_status = event.params.pc.status
+  let channel = Channel.load(event.params.channelId.toHex());
+  if (!channel) {
+    channel = new Channel(event.params.channelId.toHex());
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+    channel.walletA = event.params.walletA;
+    channel.walletB = event.params.walletB;
+    channel.proxyWalletA = event.params.pc.proxyA;
+    channel.proxyWalletB = event.params.pc.proxyB;
+    channel.amountA = event.params.pc.balanceA;
+    channel.amountB = event.params.pc.balanceB;
+    channel.metadata = event.params.pc.metadata;
+    channel.status = handleStatus(event.params.pc.status as u32);
 
-  entity.save()
+    channel.save();
+  }
+}
+
+function handleStatus(statusFromChain: u32): string {
+  switch (statusFromChain) {
+    case 0:
+      return "CREATED";
+    case 1:
+      return "ACTIVE";
+    case 2:
+      return "PENDING";
+    case 3:
+      return "CLOSED";
+    default:
+      return "";
+  }
 }

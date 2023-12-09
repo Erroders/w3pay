@@ -1,8 +1,20 @@
 {
   "mumbai": {
     "Contract": {
-      "address": "0x02964bfab37763AfC8df4dbFEa67d8965765132E",
-      "startBlock": 43361320
+      "address": "0xB30ccf958577df6a59f1592Fc6703519F0584E25",
+      "startBlock": 43368677
+    }
+  },
+  "polygon-zkevm-testnet": {
+    "Contract": {
+      "address": "0x483F9805A188925489E34d9e30c206F2ACC73a5e",
+      "startBlock": 3406591
+    }
+  },
+  "celo-alfajores": {
+    "Contract": {
+      "address": "0x1e1dd3E1693cb8D5C5d2d003640F2d20e0132CeE",
+      "startBlock": 21347549
     }
   }
 }
