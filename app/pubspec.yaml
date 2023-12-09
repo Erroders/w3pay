@@ -14,6 +14,7 @@ dependencies:
   web3modal_flutter: ^3.0.1
   figma_squircle: ^0.5.3
   flutter_svg: ^2.0.9
+  mobile_scanner: ^3.5.5
 
 dev_dependencies:
   flutter_test:

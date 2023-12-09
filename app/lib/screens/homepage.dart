@@ -3,6 +3,7 @@ import 'package:ethpay/components/wallet_card.dart';
 import 'package:ethpay/constants.dart';
 import 'package:ethpay/controllers/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/instance_manager.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -12,7 +13,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  HomepageController controller = HomepageController();
+  HomepageController controller = Get.find<HomepageController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,41 +49,46 @@ class _HomepageState extends State<Homepage> {
         elevation: 0,
         centerTitle: false,
       ),
-      body: const SafeArea(
+      body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(14.0),
+            padding: const EdgeInsets.all(14.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 // SizedBox(height: kToolbarHeight * 2),
-                WalletCard(),
+                const WalletCard(),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 Row(
                   children: [
-                    Expanded(
-                      child: BoxCard(
-                        text: 'Pay',
-                        icon: 'assets/svgs/pay.svg',
-                        color: PRIMARY_COLOR_1,
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
+                    const Expanded(
                       child: BoxCard(
                         text: 'Receive',
                         icon: 'assets/svgs/receive.svg',
                         color: PRIMARY_COLOR_2,
                       ),
                     ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.onPay();
+                        },
+                        child: const BoxCard(
+                          text: 'Pay',
+                          icon: 'assets/svgs/pay.svg',
+                          color: PRIMARY_COLOR_1,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -91,19 +97,20 @@ class _HomepageState extends State<Homepage> {
                         text: 'Transactions',
                         icon: 'assets/svgs/transactions.svg',
                         color: PRIMARY_COLOR_4,
+                        aspectRatio: 3,
                       ),
                     ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: BoxCard(
-                        text: 'Settings',
-                        icon: 'assets/svgs/settings.svg',
-                        color: PRIMARY_COLOR_3,
-                      ),
-                    ),
+                    // SizedBox(width: 16),
+                    // Expanded(
+                    //   child: BoxCard(
+                    //     text: 'Settings',
+                    //     icon: 'assets/svgs/settings.svg',
+                    //     color: PRIMARY_COLOR_3,
+                    //   ),
+                    // ),
                   ],
                 ),
-                SizedBox(height: 80),
+                const SizedBox(height: 80),
               ],
             ),
           ),

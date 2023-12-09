@@ -6,18 +6,20 @@ class BoxCard extends StatelessWidget {
   final String text;
   final String icon;
   final int color;
+  final double aspectRatio;
 
   const BoxCard({
     super.key,
     required this.text,
     required this.icon,
     required this.color,
+    this.aspectRatio = 1.0,
   });
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1,
+      aspectRatio: aspectRatio,
       child: Container(
         width: double.infinity,
         height: 200,
