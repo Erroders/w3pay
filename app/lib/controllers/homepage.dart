@@ -1,13 +1,21 @@
+import 'dart:math';
+
 import 'package:ethpay/constants.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:web3dart/web3dart.dart';
 import 'package:web3modal_flutter/web3modal_flutter.dart';
+import 'package:web_socket_channel/io.dart';
 
 class HomepageController extends GetxController {
-  RxString walletAddress = "0x35c8a36820378c75Eb7792c4Ef411a9F8c5C18cF".obs;
+  RxString walletAddress = "".obs;
+  RxString proxyWalletAddress = "".obs;
+  RxString proxyWalletPrivateKey = "".obs;
+  late EthPrivateKey proxyWalletEthPrivateKey;
   RxBool walletCreated = false.obs;
   RxDouble walletBalance = 0.0.obs;
 
@@ -23,6 +31,14 @@ class HomepageController extends GetxController {
         universal: 'https://www.walletconnect.com',
       ),
     ),
+  );
+
+  final client = Web3Client(
+    RPC_POLYGON_ZK_EVM,
+    Client(),
+    socketConnector: () {
+      return IOWebSocketChannel.connect(WS_POLYGON_ZK_EVM).cast<String>();
+    },
   );
 
   final _celoChain = W3MChainInfo(
@@ -336,12 +352,28 @@ class HomepageController extends GetxController {
     walletCreated.value = true;
   }
 
+  void generateWallet() {
+    var rng = Random.secure();
+    EthPrivateKey proxyWalletEthPrivateKey = EthPrivateKey.createRandom(rng);
+    proxyWalletAddress.value = proxyWalletEthPrivateKey.address.hex;
+  }
+
   _approveTransaction() async {
     if (_w3mService.web3App == null ||
         _w3mService.session == null ||
         _w3mService.selectedChain == null) {
       return;
     }
+
+    // Indian_rupee(
+    //   address: EthereumAddress.fromHex(DEPLOYED_USDC_POLYGON_ZK_EVM),
+    //   client: client,
+    // ).approve(
+    //   EthereumAddress.fromHex(proxyWalletAddress.value),
+    //   BigInt.from(1000),
+    //   credentials: proxyWalletEthPrivateKey,
+    // );
+
     final response = _w3mService.web3App!.request(
       topic: _w3mService.session!.topic,
       chainId: "eip155:1101",
@@ -351,10 +383,10 @@ class HomepageController extends GetxController {
           {
             "to": USDC_POLYGON_ZK_EVM,
             "from": _w3mService.address,
-            // "gas": "",
             "value": "0x0",
             "data":
-                "0x095ea7b30000000000000000000000007b36dfd5304562952e2b4de9c8048ed155c6115d00000000000000000000000000000000000000000000000107ad8f556c6c0000",
+                "0x095ea7b3000000000000000000000000${_w3mService.address}FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+            // "gas": "",
             // "gasPrice": "",
             // "maxPriorityFeePerGas": "",
             // "maxFeePerGas": ""
@@ -394,6 +426,6 @@ class HomepageController extends GetxController {
     );
 
     _w3mService.launchConnectedWallet();
-    await Future.wait([response]);
+    var res = await Future.wait([response]);
   }
 }

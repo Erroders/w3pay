@@ -1,3 +1,4 @@
+import 'package:ethpay/controllers/homepage.dart';
 import 'package:ethpay/screens/homepage.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class _CreateWalletState extends State<CreateWallet> {
               const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () {
+                  Get.find<HomepageController>().generateWallet();
                   Get.toNamed(Homepage.id);
                 },
                 style: ElevatedButton.styleFrom(
