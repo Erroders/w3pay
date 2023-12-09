@@ -1,20 +1,37 @@
 import { ChannelUpdate as ChannelUpdateEvent } from "../generated/Contract/Contract";
-import { Channel } from "../generated/schema";
+import { PaymentChannel, ChannelState } from "../generated/schema";
 
 export function handleChannelUpdate(event: ChannelUpdateEvent): void {
-  let channel = Channel.load(event.params.channelId.toHex());
+  let channel = PaymentChannel.load(event.params.channelid.toHex());
   if (!channel) {
-    channel = new Channel(event.params.channelId.toHex());
-
+    channel = new PaymentChannel(event.params.channelid.toHex());
     channel.walletA = event.params.walletA;
     channel.walletB = event.params.walletB;
     channel.proxyWalletA = event.params.pc.proxyA;
     channel.proxyWalletB = event.params.pc.proxyB;
-    channel.amountA = event.params.pc.balanceA;
-    channel.amountB = event.params.pc.balanceB;
-    channel.metadata = event.params.pc.metadata;
+    channel.status = handleStatus(event.params.pc.status as u32);
+    channel.challengePeriod = event.params.pc.challengePeriod;
+
+    const initial = new ChannelState(
+      event.params.channelid.toHex() + "initial"
+    );
+    initial.balanceA = event.params.pc.balanceA;
+    initial.balanceB = event.params.pc.balanceB;
+    initial.index = event.params.pc.index;
+    initial.save();
+
+    channel.initialState = event.params.channelid.toHex() + "initial";
+    channel.save();
+  } else {
     channel.status = handleStatus(event.params.pc.status as u32);
 
+    const final = new ChannelState(event.params.channelid.toHex() + "final");
+    final.balanceA = event.params.pc.balanceA;
+    final.balanceB = event.params.pc.balanceB;
+    final.index = event.params.pc.index;
+    final.save();
+
+    channel.finalState = event.params.channelid.toHex() + "final";
     channel.save();
   }
 }
@@ -22,12 +39,10 @@ export function handleChannelUpdate(event: ChannelUpdateEvent): void {
 function handleStatus(statusFromChain: u32): string {
   switch (statusFromChain) {
     case 0:
-      return "CREATED";
-    case 1:
       return "ACTIVE";
-    case 2:
+    case 1:
       return "PENDING";
-    case 3:
+    case 2:
       return "CLOSED";
     default:
       return "";

@@ -1,17 +1,23 @@
-type Channel @entity {
+type PaymentChannel @entity {
   id: ID!
   walletA: Bytes!
   walletB: Bytes!
   proxyWalletA: Bytes!
   proxyWalletB: Bytes!
-  amountA: BigInt!
-  amountB: BigInt!
-  metadata: Bytes
   status: ChannelStatus!
+  challengePeriod: BigInt!
+  initialState: ChannelState!
+  finalState: ChannelState
+}
+
+type ChannelState @entity {
+  id: ID!
+  balanceA: BigInt!
+  balanceB: BigInt!
+  index: BigInt!
 }
 
 enum ChannelStatus {
-  CREATED
   ACTIVE
   PENDING
   CLOSED

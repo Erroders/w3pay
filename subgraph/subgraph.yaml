@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Contract
-    network: mumbai
+    network: polygon-zkevm-testnet
     source:
       abi: Contract
-      address: "0xB30ccf958577df6a59f1592Fc6703519F0584E25"
-      startBlock: 43368677
+      address: "0x626C1Ce3d2BE90D0FE8C48462A756D129A9A6393"
+      startBlock: 3406591
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -20,6 +20,6 @@ dataSources:
           file: ./abis/Contract.json
       eventHandlers:
         - event: ChannelUpdate(indexed bytes32,indexed address,indexed
-            address,(address,address,uint256,address,address,uint256,bytes,uint8))
+            address,(address,address,uint256,address,address,uint256,uint256,uint256,uint8))
           handler: handleChannelUpdate
       file: ./src/contract.ts

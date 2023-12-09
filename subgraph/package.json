@@ -5,8 +5,8 @@
     "prepare": "graph codegen && graph build --network",
     "codegen": "graph codegen",
     "build": "graph build",
-    "auth": "graph auth --product hosted-service",
-    "deploy": "graph deploy --product hosted-service erroders/payment_channel"
+    "auth": "graph auth --studio",
+    "deploy": "graph deploy --studio w3pay-80001"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.63.0",
