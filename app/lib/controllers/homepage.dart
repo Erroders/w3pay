@@ -5,7 +5,13 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
 class HomepageController extends GetxController {
-  String walletAddress = "0x35c8a36820378c75Eb7792c4Ef411a9F8c5C18cF";
+  RxString walletAddress = "0x35c8a36820378c75Eb7792c4Ef411a9F8c5C18cF".obs;
+  RxBool walletCreated = false.obs;
+  RxDouble walletBalance = 0.0.obs;
+
+  HomepageController() {
+    //
+  }
 
   Future<void> onPay() async {
     String? address = await Get.bottomSheet(
@@ -111,7 +117,7 @@ class HomepageController extends GetxController {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: PrettyQrView.data(
-                  data: walletAddress,
+                  data: walletAddress.value,
                 ),
               ),
               const SizedBox(height: 20),
@@ -161,5 +167,9 @@ class HomepageController extends GetxController {
         snackStyle: SnackStyle.GROUNDED,
       ),
     );
+  }
+
+  Future<void> onFundWallet() async {
+    walletCreated.value = true;
   }
 }

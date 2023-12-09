@@ -4,9 +4,14 @@ import 'package:flutter_svg/svg.dart';
 
 class WalletCard extends StatefulWidget {
   final int? color;
+  final String address;
+  final double balance;
+
   const WalletCard({
     Key? key,
     this.color,
+    required this.address,
+    required this.balance,
   }) : super(key: key);
 
   @override
@@ -46,9 +51,9 @@ class _WalletCardState extends State<WalletCard> {
                   height: 60,
                   color: Colors.white,
                 ),
-                const Text(
-                  "**** 0987",
-                  style: TextStyle(
+                Text(
+                  "**** ${widget.address.substring(widget.address.length - 4).toUpperCase()}",
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -56,12 +61,12 @@ class _WalletCardState extends State<WalletCard> {
                 ),
               ],
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "\$999.89",
-                  style: TextStyle(
+                  "\$${widget.balance.toStringAsFixed(2)}",
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
