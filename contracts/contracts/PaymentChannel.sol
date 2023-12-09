@@ -81,7 +81,7 @@ contract PaymentChannelManager {
     state = ChannelState(_channelId, pc.balanceA, pc.balanceB, pc.metadata);
   }
 
-  function getChannelStateHash(ChannelState _cs) public view returns (bytes32 stateHash) {
+  function getChannelStateHash(ChannelState calldata _cs) public view returns (bytes32 stateHash) {
     stateHash = keccak256(abi.encode(_cs.channelId, _cs.index, _cs.balanceA, _cs.balanceB, _cs.metadata));
   }
 
@@ -102,7 +102,7 @@ contract PaymentChannelManager {
     return true;
   }
 
-  function closeChannel(ChannelState _cs) public view returns (ChannelStatus status) {
+  function closeChannel(ChannelState calldata _cs) public view returns (ChannelStatus status) {
     PaymentChannel memory pc = channels[_cs.channelId];
     return pc.status;
   }
