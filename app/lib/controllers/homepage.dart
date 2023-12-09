@@ -10,7 +10,6 @@ class HomepageController extends GetxController {
   RxString walletAddress = "0x35c8a36820378c75Eb7792c4Ef411a9F8c5C18cF".obs;
   RxBool walletCreated = false.obs;
   RxDouble walletBalance = 0.0.obs;
-  RxBool _stepsIsLoading = false.obs;
 
   final _w3mService = W3MService(
     projectId: WALLETCONNECT_PROJECT_ID,
