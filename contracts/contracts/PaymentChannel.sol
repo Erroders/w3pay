@@ -45,7 +45,7 @@ contract PaymentChannelManager {
     challengePeriod = _challengePeriod;
   }
 
-  function getChannelId(PaymentChannel calldata _pc) public pure returns (bytes32 channelId) {
+  function getChannelId(PaymentChannel memory _pc) public pure returns (bytes32 channelId) {
     channelId = keccak256(
       abi.encode(_pc.walletA, _pc.proxyA, _pc.balanceA, _pc.walletB, _pc.proxyB, _pc.balanceB, _pc.metadata)
     );
@@ -78,10 +78,10 @@ contract PaymentChannelManager {
 
   function getChannelState(bytes32 _channelId) public view returns (ChannelState memory state) {
     PaymentChannel memory pc = channels[_channelId];
-    state = ChannelState(_channelId, pc.balanceA, pc.balanceB, pc.metadata);
+    state = ChannelState(_channelId, 0, pc.balanceA, pc.balanceB, pc.metadata);
   }
 
-  function getChannelStateHash(ChannelState _cs) public view returns (bytes32 stateHash) {
+  function getChannelStateHash(ChannelState calldata _cs) public pure returns (bytes32 stateHash) {
     stateHash = keccak256(abi.encode(_cs.channelId, _cs.index, _cs.balanceA, _cs.balanceB, _cs.metadata));
   }
 
@@ -102,7 +102,7 @@ contract PaymentChannelManager {
     return true;
   }
 
-  function closeChannel(ChannelState _cs) public view returns (ChannelStatus status) {
+  function closeChannel(ChannelState calldata _cs) public view returns (ChannelStatus status) {
     PaymentChannel memory pc = channels[_cs.channelId];
     return pc.status;
   }
