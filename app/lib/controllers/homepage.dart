@@ -83,7 +83,7 @@ class HomepageController extends GetxController {
     }
   }
 
-  onReceive() async {
+  Future<void> onReceive() async {
     String? address = await Get.bottomSheet(
       Container(
         width: double.infinity,
@@ -139,5 +139,16 @@ class HomepageController extends GetxController {
         ),
       );
     }
+  }
+
+  Future<void> onTransactions() async {
+    Get.showSnackbar(
+      const GetSnackBar(
+        message: 'Coming Soon',
+        duration: Duration(seconds: 3),
+        snackPosition: SnackPosition.BOTTOM,
+        snackStyle: SnackStyle.GROUNDED,
+      ),
+    );
   }
 }

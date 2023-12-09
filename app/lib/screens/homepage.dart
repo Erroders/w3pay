@@ -59,7 +59,7 @@ class _HomepageState extends State<Homepage> {
                 // SizedBox(height: kToolbarHeight * 2),
                 const WalletCard(),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
 
                 Row(
                   children: [
@@ -93,16 +93,21 @@ class _HomepageState extends State<Homepage> {
 
                 const SizedBox(height: 16),
 
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
-                      child: BoxCard(
-                        text: 'Transactions',
-                        icon: 'assets/svgs/transactions.svg',
-                        color: PRIMARY_COLOR_4,
-                        aspectRatio: 3,
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.onTransactions();
+                        },
+                        child: BoxCard(
+                          text: 'Transactions',
+                          icon: 'assets/svgs/transactions.svg',
+                          color: GREY_COLOR_LIGHT,
+                          aspectRatio: 3,
+                        ),
                       ),
                     ),
                     // SizedBox(width: 16),
