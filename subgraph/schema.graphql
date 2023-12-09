@@ -1,0 +1,24 @@
+type PaymentChannel @entity {
+  id: ID!
+  walletA: Bytes!
+  walletB: Bytes!
+  proxyWalletA: Bytes!
+  proxyWalletB: Bytes!
+  status: ChannelStatus!
+  challengePeriod: BigInt!
+  initialState: ChannelState!
+  finalState: ChannelState
+}
+
+type ChannelState @entity {
+  id: ID!
+  balanceA: BigInt!
+  balanceB: BigInt!
+  index: BigInt!
+}
+
+enum ChannelStatus {
+  ACTIVE
+  PENDING
+  CLOSED
+}

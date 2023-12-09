@@ -1,0 +1,25 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Contract
+    network: polygon-zkevm-testnet
+    source:
+      abi: Contract
+      address: "0x626C1Ce3d2BE90D0FE8C48462A756D129A9A6393"
+      startBlock: 3406591
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ChannelUpdate
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: ChannelUpdate(indexed bytes32,indexed address,indexed
+            address,(address,address,uint256,address,address,uint256,uint256,uint256,uint8))
+          handler: handleChannelUpdate
+      file: ./src/contract.ts
