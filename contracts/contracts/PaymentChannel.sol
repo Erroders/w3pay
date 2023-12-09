@@ -81,19 +81,16 @@ contract PaymentChannelManager {
     state = ChannelState(_channelId, 0, pc.balanceA, pc.balanceB, pc.metadata);
   }
 
-  function getChannelStateHash(ChannelState calldata _cs) public pure returns (bytes32 stateHash) {
+  function getChannelStateHash(ChannelState memory _cs) public pure returns (bytes32 stateHash) {
     stateHash = keccak256(abi.encode(_cs.channelId, _cs.index, _cs.balanceA, _cs.balanceB, _cs.metadata));
   }
 
   function isValidState(
-    bytes32 _channelId,
-    ChannelState calldata _channelState,
+    ChannelState memory _channelState,
     bytes calldata _sigA,
     bytes calldata _sigB
   ) public view returns (bool validity) {
-    PaymentChannel memory pc = channels[_channelId];
-
-    require(_channelId == _channelState.channelId, "Invalid channelId");
+    PaymentChannel memory pc = channels[_channelState.channelId];
     require(pc.balanceA + pc.balanceB == _channelState.balanceA + _channelState.balanceB, "Balance mismatch");
 
     bytes32 stateHash = getChannelStateHash(_channelState);
@@ -102,8 +99,25 @@ contract PaymentChannelManager {
     return true;
   }
 
-  function closeChannel(ChannelState calldata _cs) public view returns (ChannelStatus status) {
-    PaymentChannel memory pc = channels[_cs.channelId];
+  function closeChannel(
+    ChannelState memory _cs,
+    bytes calldata _sigA,
+    bytes calldata _sigB
+  ) public returns (ChannelStatus status) {
+    PaymentChannel storage pc = channels[_cs.channelId];
+
+    require(pc.status == ChannelStatus.ACTIVE, "Inactive channel");
+    isValidState(_cs, _sigA, _sigB);
+    require(keccak256(_cs.metadata) == keccak256(bytes("CLOSE")), "Invalid close msg");
+
+    pc.balanceA = _cs.balanceA;
+    pc.balanceB = _cs.balanceB;
+    pc.metadata = _cs.metadata;
+    pc.status = ChannelStatus.CLOSED;
+
+    token.transfer(pc.walletA, _cs.balanceA);
+    token.transfer(pc.walletB, _cs.balanceB);
+
     return pc.status;
   }
 
