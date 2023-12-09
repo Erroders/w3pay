@@ -85,20 +85,6 @@ contract PaymentChannelManager {
     stateHash = keccak256(abi.encode(_cs.channelId, _cs.index, _cs.balanceA, _cs.balanceB, _cs.metadata));
   }
 
-  function isValidState(
-    ChannelState memory _channelState,
-    bytes calldata _sigA,
-    bytes calldata _sigB
-  ) public view returns (bool validity) {
-    PaymentChannel memory pc = channels[_channelState.channelId];
-    require(pc.balanceA + pc.balanceB == _channelState.balanceA + _channelState.balanceB, "Balance mismatch");
-
-    bytes32 stateHash = getChannelStateHash(_channelState);
-    require(isValidSignature(pc.proxyA, stateHash, _sigA), "Invalid A's signature");
-    require(isValidSignature(pc.proxyB, stateHash, _sigB), "Invalid B's signature");
-    return true;
-  }
-
   function closeChannel(
     ChannelState memory _cs,
     bytes calldata _sigA,
@@ -119,6 +105,21 @@ contract PaymentChannelManager {
     token.transfer(pc.walletB, _cs.balanceB);
 
     return pc.status;
+  }
+
+  function isValidState(
+    ChannelState memory _channelState,
+    bytes calldata _sigA,
+    bytes calldata _sigB
+  ) public view returns (bool validity) {
+    PaymentChannel memory pc = channels[_channelState.channelId];
+
+    require(pc.balanceA + pc.balanceB == _channelState.balanceA + _channelState.balanceB, "Balance mismatch");
+
+    bytes32 stateHash = getChannelStateHash(_channelState);
+    require(isValidSignature(pc.proxyA, stateHash, _sigA), "Invalid A's signature");
+    require(isValidSignature(pc.proxyB, stateHash, _sigB), "Invalid B's signature");
+    return true;
   }
 
   function isValidSignature(address signer, bytes32 hash, bytes memory signature) internal pure returns (bool) {
