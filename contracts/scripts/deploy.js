@@ -8,8 +8,7 @@ const hre = require("hardhat");
 
 async function main() {
   const tokenAddress = "0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832";
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const challengePeriod = currentTimestampInSeconds + 60 * 5;
+  const challengePeriod = 20; // buffer blocks
 
   const contract = await hre.ethers.deployContract("PaymentChannelManager", [tokenAddress, challengePeriod]);
   await contract.waitForDeployment();

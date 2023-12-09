@@ -30,12 +30,19 @@ contract PaymentChannelManager {
 
     struct ChannelState {
         bytes32 channelId;
+        uint index;
         uint balanceA;
         uint balanceB;
         bytes metadata;
     }
 
     mapping(bytes32 => PaymentChannel) channels;
+
+    event ChannelUpdate(
+        address indexed walletA,
+        address indexed walletB,
+        PaymentChannel pc
+    );
 
     constructor(address _tokenAddress, uint256 _challengePeriod) payable {
         token = IERC20(_tokenAddress);
@@ -56,13 +63,6 @@ contract PaymentChannelManager {
                 _pc.metadata
             )
         );
-    }
-
-    function getChannelState(
-        bytes32 _channelId
-    ) public view returns (ChannelState memory state) {
-        PaymentChannel memory pc = channels[_channelId];
-        state = ChannelState(_channelId, pc.balanceA, pc.balanceB, pc.metadata);
     }
 
     function createChannel(
@@ -87,6 +87,34 @@ contract PaymentChannelManager {
 
         channelId = getChannelId(pc);
         channels[channelId] = pc;
+        emit ChannelUpdate(_walletA, _walletB, pc);
+    }
+
+    function getChannelState(
+        bytes32 _channelId
+    ) public view returns (ChannelState memory state) {
+        PaymentChannel memory pc = channels[_channelId];
+        state = ChannelState(
+            _channelId,
+            0,
+            pc.balanceA,
+            pc.balanceB,
+            pc.metadata
+        );
+    }
+
+    function getChannelStateHash(
+        ChannelState calldata _cs
+    ) public pure returns (bytes32 stateHash) {
+        stateHash = keccak256(
+            abi.encode(
+                _cs.channelId,
+                _cs.index,
+                _cs.balanceA,
+                _cs.balanceB,
+                _cs.metadata
+            )
+        );
     }
 
     function isValidState(
@@ -95,33 +123,31 @@ contract PaymentChannelManager {
         bytes calldata _sigA,
         bytes calldata _sigB
     ) public view returns (bool validity) {
-        require(_channelId == _channelState.channelId, "Invalid channelId");
         PaymentChannel memory pc = channels[_channelId];
+
+        require(_channelId == _channelState.channelId, "Invalid channelId");
         require(
             pc.balanceA + pc.balanceB ==
                 _channelState.balanceA + _channelState.balanceB,
             "Balance mismatch"
         );
-        bytes32 stateHash = keccak256(
-            abi.encode(
-                pc.walletA,
-                pc.proxyA,
-                pc.balanceA,
-                pc.walletB,
-                pc.proxyB,
-                pc.balanceB,
-                pc.metadata
-            )
+
+        bytes32 stateHash = getChannelStateHash(_channelState);
+        require(
+            isValidSignature(pc.proxyA, stateHash, _sigA),
+            "Invalid A's signature"
         );
-        isValidSignature(pc.proxyA, stateHash, _sigA);
-        isValidSignature(pc.proxyB, stateHash, _sigB);
-        return false;
+        require(
+            isValidSignature(pc.proxyB, stateHash, _sigB),
+            "Invalid B's signature"
+        );
+        return true;
     }
 
     function closeChannel(
-        bytes32 _channelId
+        ChannelState calldata _cs
     ) public view returns (ChannelStatus status) {
-        PaymentChannel memory pc = channels[_channelId];
+        PaymentChannel memory pc = channels[_cs.channelId];
         return pc.status;
     }
 
