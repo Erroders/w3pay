@@ -26,6 +26,12 @@ module.exports = {
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
   },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY,
+  },
+  sourcify: {
+    enabled: true,
+  },
 };
 
 /*
