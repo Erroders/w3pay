@@ -16,6 +16,10 @@ class CreateWallet extends StatefulWidget {
 class _CreateWalletState extends State<CreateWallet> {
   @override
   Widget build(BuildContext context) {
+    if (Get.find<HomepageController>().isInitiated.isTrue) {
+      Get.to(Homepage.id);
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -44,9 +48,9 @@ class _CreateWalletState extends State<CreateWallet> {
               ),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () {
-                  Get.find<HomepageController>().generateWallet();
-                  Get.toNamed(Homepage.id);
+                onPressed: () async {
+                  await Get.find<HomepageController>().generateWallet();
+                  // Get.offAndToNamed(Homepage.id);
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 64),

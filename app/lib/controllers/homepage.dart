@@ -7,11 +7,13 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web3modal_flutter/web3modal_flutter.dart';
 import 'package:web_socket_channel/io.dart';
 
 class HomepageController extends GetxController {
+  RxBool isInitiated = false.obs;
   RxString walletAddress = "".obs;
   RxString proxyWalletAddress = "".obs;
   RxString proxyWalletPrivateKey = "".obs;
@@ -19,6 +21,7 @@ class HomepageController extends GetxController {
   RxBool walletCreated = false.obs;
   RxDouble walletBalance = 0.0.obs;
 
+  late SharedPreferences _sharedPreferences;
   final _w3mService = W3MService(
     projectId: WALLETCONNECT_PROJECT_ID,
     metadata: const PairingMetadata(
@@ -67,6 +70,15 @@ class HomepageController extends GetxController {
 
   HomepageController() {
     _initWC();
+    SharedPreferences.getInstance().then((value) async {
+      _sharedPreferences = value;
+      final String? pk = _sharedPreferences.getString("proxyPK");
+
+      if (pk != null && pk.isNotEmpty) {
+        proxyWalletEthPrivateKey = EthPrivateKey.fromInt(BigInt.parse(pk));
+        proxyWalletAddress.value = proxyWalletEthPrivateKey.address.hex;
+      }
+    });
   }
 
   Future<void> _initWC() async {
@@ -234,7 +246,7 @@ class HomepageController extends GetxController {
   }
 
   Future<void> onFundWallet() async {
-    String? address = await Get.bottomSheet(
+    bool? completed = await Get.bottomSheet(
       Container(
         width: double.infinity,
         decoration: const ShapeDecoration(
@@ -317,8 +329,8 @@ class HomepageController extends GetxController {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  await _sendTransaction();
-                  Get.back();
+                  final res = await _sendTransaction();
+                  Get.back(result: res);
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 64),
@@ -349,13 +361,23 @@ class HomepageController extends GetxController {
     if (_w3mService.address != null) {
       walletAddress.value = _w3mService.address!;
     }
-    walletCreated.value = true;
+
+    if (completed != null && completed) {
+      walletCreated.value = true;
+    }
   }
 
-  void generateWallet() {
+  Future<void> generateWallet() async {
     var rng = Random.secure();
-    EthPrivateKey proxyWalletEthPrivateKey = EthPrivateKey.createRandom(rng);
+    proxyWalletEthPrivateKey = EthPrivateKey.createRandom(rng);
     proxyWalletAddress.value = proxyWalletEthPrivateKey.address.hex;
+
+    await _sharedPreferences.setString(
+      "proxyPK",
+      proxyWalletEthPrivateKey.privateKeyInt.toString(),
+    );
+
+    isInitiated.value = true;
   }
 
   _approveTransaction() async {
@@ -399,11 +421,11 @@ class HomepageController extends GetxController {
     await Future.wait([response]);
   }
 
-  _sendTransaction() async {
+  Future<bool> _sendTransaction() async {
     if (_w3mService.web3App == null ||
         _w3mService.session == null ||
         _w3mService.selectedChain == null) {
-      return;
+      return false;
     }
     final response = _w3mService.web3App!.request(
       topic: _w3mService.session!.topic,
@@ -426,6 +448,9 @@ class HomepageController extends GetxController {
     );
 
     _w3mService.launchConnectedWallet();
+
     var res = await Future.wait([response]);
+
+    return true;
   }
 }

@@ -20,7 +20,8 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => Scaffold(
+      () {
+        return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
             leading: Padding(
@@ -71,7 +72,7 @@ class _HomepageState extends State<Homepage> {
                       color: controller.walletCreated.isFalse
                           ? GREY_COLOR_LIGHT
                           : null,
-                      address: controller.walletAddress.value,
+                      address: controller.proxyWalletAddress.value,
                       balance: controller.walletBalance.value,
                     ),
                     const SizedBox(height: 32),
@@ -158,7 +159,9 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
             ),
-          )),
+          ),
+        );
+      },
     );
   }
 }

@@ -21,6 +21,12 @@ class WalletCard extends StatefulWidget {
 class _WalletCardState extends State<WalletCard> {
   @override
   Widget build(BuildContext context) {
+    String smallAddress = "0000";
+    if (widget.address.length > 6) {
+      smallAddress =
+          widget.address.substring(widget.address.length - 4).toUpperCase();
+    }
+
     return AspectRatio(
       aspectRatio: 1.586,
       child: Container(
@@ -52,7 +58,7 @@ class _WalletCardState extends State<WalletCard> {
                   color: Colors.white,
                 ),
                 Text(
-                  "**** ${widget.address.substring(widget.address.length - 4).toUpperCase()}",
+                  "**** $smallAddress",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
