@@ -7,7 +7,10 @@
 const hre = require("hardhat");
 
 async function main() {
-  const contract = await hre.ethers.deployContract("PaymentChannel");
+  const tokenAddress = "0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832";
+  const challengePeriod = 20; // buffer blocks
+
+  const contract = await hre.ethers.deployContract("PaymentChannelManager", [tokenAddress, challengePeriod]);
   await contract.waitForDeployment();
 
   console.log(`PaymentChannel deployed to ${contract.target}`);
