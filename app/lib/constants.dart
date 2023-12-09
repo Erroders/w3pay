@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+const String APP_NAME = 'W3Pay';
+
 const int PRIMARY_COLOR_1 = 0xFF38B6FF;
 const int PRIMARY_COLOR_2 = 0xFF5271FF;
 const int PRIMARY_COLOR_3 = 0xFF38B6FF;

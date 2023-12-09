@@ -31,7 +31,7 @@ class _HomepageState extends State<Homepage> {
             ),
             const SizedBox(width: 8),
             const Text(
-              'EthPay',
+              APP_NAME,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,

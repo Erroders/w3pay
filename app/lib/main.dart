@@ -1,3 +1,4 @@
+import 'package:ethpay/constants.dart';
 import 'package:ethpay/controllers/homepage.dart';
 import 'package:ethpay/screens/homepage.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'EthPay',
+      title: APP_NAME,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
