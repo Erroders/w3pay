@@ -1,5 +1,6 @@
 import 'package:ethpay/constants.dart';
 import 'package:ethpay/controllers/homepage.dart';
+import 'package:ethpay/screens/create_wallet.dart';
 import 'package:ethpay/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,8 +24,18 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const Homepage(),
+      initialRoute: CreateWallet.id,
       debugShowCheckedModeBanner: false,
+      getPages: [
+        GetPage(
+          name: Homepage.id,
+          page: () => const Homepage(),
+        ),
+        GetPage(
+          name: CreateWallet.id,
+          page: () => const CreateWallet(),
+        ),
+      ],
     );
   }
 }

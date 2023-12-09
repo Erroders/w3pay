@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 
 class Homepage extends StatefulWidget {
+  static const String id = "/screens/homepage";
+
   const Homepage({super.key});
 
   @override
@@ -20,25 +22,33 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(width: 8),
-            Image.asset(
-              'assets/logo.png',
-              fit: BoxFit.contain,
-              height: 38,
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              APP_NAME,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+        leading: Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 8, bottom: 8),
+          child: Image.asset(
+            'assets/logo.png',
+            fit: BoxFit.contain,
+            height: 38,
+          ),
         ),
+        title: const Text(
+          APP_NAME,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              controller.onSettings();
+            },
+            icon: Icon(
+              Icons.settings,
+              color: Colors.black.withOpacity(0.7),
+              size: 28,
+            ),
+          ),
+        ],
         backgroundColor: Colors.transparent,
         titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w600,
@@ -71,7 +81,7 @@ class _HomepageState extends State<Homepage> {
                         child: const BoxCard(
                           text: 'Receive',
                           icon: 'assets/svgs/receive.svg',
-                          color: PRIMARY_COLOR_2,
+                          color: PRIMARY_COLOR_1,
                         ),
                       ),
                     ),
@@ -98,26 +108,33 @@ class _HomepageState extends State<Homepage> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
+                      flex: 1,
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.onSettings();
+                        },
+                        child: const BoxCard(
+                          text: 'Add Funds',
+                          icon: 'assets/svgs/add_funds.svg',
+                          color: PRIMARY_COLOR_2,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 2,
                       child: GestureDetector(
                         onTap: () {
                           controller.onTransactions();
                         },
-                        child: BoxCard(
+                        child: const BoxCard(
                           text: 'Transactions',
                           icon: 'assets/svgs/transactions.svg',
                           color: GREY_COLOR_LIGHT,
-                          aspectRatio: 3,
+                          aspectRatio: 2,
                         ),
                       ),
                     ),
-                    // SizedBox(width: 16),
-                    // Expanded(
-                    //   child: BoxCard(
-                    //     text: 'Settings',
-                    //     icon: 'assets/svgs/settings.svg',
-                    //     color: PRIMARY_COLOR_3,
-                    //   ),
-                    // ),
                   ],
                 ),
                 const SizedBox(height: 80),

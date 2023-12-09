@@ -151,4 +151,15 @@ class HomepageController extends GetxController {
       ),
     );
   }
+
+  Future<void> onSettings() async {
+    Get.showSnackbar(
+      const GetSnackBar(
+        message: 'Coming Soon',
+        duration: Duration(seconds: 3),
+        snackPosition: SnackPosition.BOTTOM,
+        snackStyle: SnackStyle.GROUNDED,
+      ),
+    );
+  }
 }

@@ -16,6 +16,7 @@ dependencies:
   flutter_svg: ^2.0.9
   mobile_scanner: ^3.5.5
   pretty_qr_code: ^3.0.0
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -26,4 +27,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/images/
     - assets/svgs/
