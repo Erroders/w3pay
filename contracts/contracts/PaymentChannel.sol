@@ -73,7 +73,7 @@ contract PaymentChannelManager {
 
     channelId = getChannelId(pc);
     channels[channelId] = pc;
-    emit ChannelUpdate(_walletA, walletB, pc);
+    emit ChannelUpdate(_walletA, _walletB, pc);
   }
 
   function getChannelState(bytes32 _channelId) public view returns (ChannelState memory state) {
@@ -103,7 +103,7 @@ contract PaymentChannelManager {
   }
 
   function closeChannel(ChannelState _cs) public view returns (ChannelStatus status) {
-    PaymentChannel memory pc = channels[_channelId];
+    PaymentChannel memory pc = channels[_cs.channelId];
     return pc.status;
   }
 
