@@ -11,7 +11,6 @@ contract PaymentChannelManager {
   uint256 challengePeriod; // in blocks
 
   enum ChannelStatus {
-    CREATED,
     ACTIVE,
     PENDING,
     CLOSED
@@ -24,7 +23,8 @@ contract PaymentChannelManager {
     address walletB;
     address proxyB;
     uint balanceB;
-    bytes metadata;
+    uint index;
+    uint challengePeriod;
     ChannelStatus status;
   }
 
@@ -36,9 +36,18 @@ contract PaymentChannelManager {
     bytes metadata;
   }
 
+  struct HTLCState {
+    bytes32 id;
+    address sender;
+    uint amount;
+    bytes32 hashlock;
+    uint timelock;
+    bytes32 key;
+  }
+
   mapping(bytes32 => PaymentChannel) channels;
 
-  event ChannelUpdate(address indexed walletA, address indexed walletB, PaymentChannel pc);
+  event ChannelUpdate(bytes32 indexed channelid, address indexed walletA, address indexed walletB, PaymentChannel pc);
 
   constructor(address _tokenAddress, uint256 _challengePeriod) payable {
     token = IERC20(_tokenAddress);
@@ -46,9 +55,7 @@ contract PaymentChannelManager {
   }
 
   function getChannelId(PaymentChannel memory _pc) public pure returns (bytes32 channelId) {
-    channelId = keccak256(
-      abi.encode(_pc.walletA, _pc.proxyA, _pc.balanceA, _pc.walletB, _pc.proxyB, _pc.balanceB, _pc.metadata)
-    );
+    channelId = keccak256(abi.encode(_pc.walletA, _pc.proxyA, _pc.walletB, _pc.proxyB));
   }
 
   function createChannel(
@@ -67,18 +74,14 @@ contract PaymentChannelManager {
       _walletB,
       _proxyB,
       _amount,
-      "",
-      ChannelStatus.CREATED
+      0,
+      0,
+      ChannelStatus.ACTIVE
     );
 
     channelId = getChannelId(pc);
     channels[channelId] = pc;
-    emit ChannelUpdate(_walletA, _walletB, pc);
-  }
-
-  function getChannelState(bytes32 _channelId) public view returns (ChannelState memory state) {
-    PaymentChannel memory pc = channels[_channelId];
-    state = ChannelState(_channelId, 0, pc.balanceA, pc.balanceB, pc.metadata);
+    emit ChannelUpdate(channelId, _walletA, _walletB, pc);
   }
 
   function getChannelStateHash(ChannelState memory _cs) public pure returns (bytes32 stateHash) {
@@ -98,7 +101,6 @@ contract PaymentChannelManager {
 
     pc.balanceA = _cs.balanceA;
     pc.balanceB = _cs.balanceB;
-    pc.metadata = _cs.metadata;
     pc.status = ChannelStatus.CLOSED;
 
     token.transfer(pc.walletA, _cs.balanceA);
@@ -107,11 +109,75 @@ contract PaymentChannelManager {
     return pc.status;
   }
 
-  function isValidState(
-    ChannelState memory _channelState,
+  function requestCloseChannel(
+    ChannelState memory _cs,
     bytes calldata _sigA,
     bytes calldata _sigB
-  ) public view returns (bool validity) {
+  ) public returns (ChannelStatus status) {
+    PaymentChannel storage pc = channels[_cs.channelId];
+
+    require(pc.status == ChannelStatus.ACTIVE, "Inactive channel");
+    isValidState(_cs, _sigA, _sigB);
+
+    HTLCState[] memory htlcs = abi.decode(_cs.metadata, (HTLCState[]));
+    for (uint i = 0; i < htlcs.length; i++) {
+      HTLCState memory htlc = htlcs[i];
+      if (htlc.timelock > block.number && htlc.key != bytes32(0) && htlc.hashlock == keccak256(abi.encode(htlc.key))) {
+        if (htlc.sender == pc.walletA) {
+          _cs.balanceA -= htlc.amount;
+          _cs.balanceB += htlc.amount;
+        } else {
+          _cs.balanceB -= htlc.amount;
+          _cs.balanceA += htlc.amount;
+        }
+      }
+    }
+    pc.balanceA = _cs.balanceA;
+    pc.balanceB = _cs.balanceB;
+    pc.index = _cs.index;
+    pc.challengePeriod = block.number + challengePeriod;
+    pc.status = ChannelStatus.PENDING;
+    return ChannelStatus.PENDING;
+  }
+
+  function challengeCloseChannel(
+    ChannelState memory _cs,
+    bytes calldata _sigA,
+    bytes calldata _sigB
+  ) public returns (ChannelStatus status) {
+    PaymentChannel storage pc = channels[_cs.channelId];
+
+    require(pc.status == ChannelStatus.PENDING, "Non-pending channel");
+    require(_cs.index > pc.index, "Older state provided");
+    require(pc.challengePeriod >= block.number, "Challenge period over");
+
+    isValidState(_cs, _sigA, _sigB);
+
+    HTLCState[] memory htlcs = abi.decode(_cs.metadata, (HTLCState[]));
+    for (uint i = 0; i < htlcs.length; i++) {
+      HTLCState memory htlc = htlcs[i];
+      if (htlc.timelock > block.number && htlc.key != bytes32(0) && htlc.hashlock == keccak256(abi.encode(htlc.key))) {
+        if (htlc.sender == pc.walletA) {
+          _cs.balanceA -= htlc.amount;
+          _cs.balanceB += htlc.amount;
+        } else {
+          _cs.balanceB -= htlc.amount;
+          _cs.balanceA += htlc.amount;
+        }
+      }
+    }
+    pc.balanceA = _cs.balanceA;
+    pc.balanceB = _cs.balanceB;
+    pc.index = _cs.index;
+    pc.status = ChannelStatus.CLOSED;
+
+    token.transfer(pc.walletA, _cs.balanceA);
+    token.transfer(pc.walletB, _cs.balanceB);
+
+    return ChannelStatus.CLOSED;
+  }
+
+  function isValidState(ChannelState memory _channelState, bytes calldata _sigA, bytes calldata _sigB) public view {
     PaymentChannel memory pc = channels[_channelState.channelId];
 
     require(pc.balanceA + pc.balanceB == _channelState.balanceA + _channelState.balanceB, "Balance mismatch");
@@ -119,7 +185,6 @@ contract PaymentChannelManager {
     bytes32 stateHash = getChannelStateHash(_channelState);
     require(isValidSignature(pc.proxyA, stateHash, _sigA), "Invalid A's signature");
     require(isValidSignature(pc.proxyB, stateHash, _sigB), "Invalid B's signature");
-    return true;
   }
 
   function isValidSignature(address signer, bytes32 hash, bytes memory signature) internal pure returns (bool) {
