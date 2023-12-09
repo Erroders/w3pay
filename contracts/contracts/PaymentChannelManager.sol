@@ -54,8 +54,8 @@ contract PaymentChannelManager {
     challengePeriod = _challengePeriod;
   }
 
-  function getChannelId(PaymentChannel memory _pc) public pure returns (bytes32 channelId) {
-    channelId = keccak256(abi.encode(_pc.walletA, _pc.proxyA, _pc.walletB, _pc.proxyB));
+  function getChannelId(PaymentChannel memory _pc) public view returns (bytes32 channelId) {
+    channelId = keccak256(abi.encodePacked(_pc.walletA, _pc.walletB, address(this), block.chainid));
   }
 
   function createChannel(
@@ -106,6 +106,7 @@ contract PaymentChannelManager {
     token.transfer(pc.walletA, _cs.balanceA);
     token.transfer(pc.walletB, _cs.balanceB);
 
+    emit ChannelUpdate(_cs.channelId, pc.walletA, pc.walletB, pc);
     return pc.status;
   }
 
@@ -137,6 +138,8 @@ contract PaymentChannelManager {
     pc.index = _cs.index;
     pc.challengePeriod = block.number + challengePeriod;
     pc.status = ChannelStatus.PENDING;
+
+    emit ChannelUpdate(_cs.channelId, pc.walletA, pc.walletB, pc);
     return ChannelStatus.PENDING;
   }
 
@@ -174,6 +177,7 @@ contract PaymentChannelManager {
     token.transfer(pc.walletA, _cs.balanceA);
     token.transfer(pc.walletB, _cs.balanceB);
 
+    emit ChannelUpdate(_cs.channelId, pc.walletA, pc.walletB, pc);
     return ChannelStatus.CLOSED;
   }
 
