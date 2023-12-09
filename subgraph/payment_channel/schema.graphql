@@ -1,0 +1,16 @@
+type ChannelUpdate @entity(immutable: true) {
+  id: Bytes!
+  walletA: Bytes! # address
+  walletB: Bytes! # address
+  pc_walletA: Bytes! # address
+  pc_proxyA: Bytes! # address
+  pc_balanceA: BigInt! # uint256
+  pc_walletB: Bytes! # address
+  pc_proxyB: Bytes! # address
+  pc_balanceB: BigInt! # uint256
+  pc_metadata: Bytes! # bytes
+  pc_status: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
