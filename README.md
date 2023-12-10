@@ -21,11 +21,13 @@ Token transfers on EThereum are expensive and slow. Now if L2s comes to rescue, 
 - Zkevm 1442 : https://thegraph.com/studio/subgraph/w3pay-1442/playground
 - Mumbai : https://thegraph.com/studio/subgraph/w3pay-80001/playground/
 - Celo : https://thegraph.com/studio/subgraph/w3pay-44787/playground
-
+- Arbitrum : https://thegraph.com/studio/subgraph/w3pay-421613/playground
 
 ### Contract
 - Scoll: https://sepolia-blockscout.scroll.io/address/0x8bEAaa641B1Da8190CB6731141fE3B8F9eb68a01
 - ZKevm: https://testnet-zkevm.polygonscan.com/address/0x626C1Ce3d2BE90D0FE8C48462A756D129A9A6393#code
 - Zeta: https://explorer.zetachain.com/address/0x8bEAaa641B1Da8190CB6731141fE3B8F9eb68a01
+- Celo: https://alfajores.celoscan.io/address/0xbf8d13C531aA3E491e907C38474c3bd46611f8D5#code
 - Mumbai : https://mumbai.polygonscan.com/address/0x21FC5cA746F39D93CFA8421B424696640f838716#code
-- Arbitrum : https://goerli.arbiscan.io/address/0x8bEAaa641B1Da8190CB6731141fE3B8F9eb68a01#code
+- Arbitrum : https://goerli.arbiscan.io/address/0x8bEAaa641B1Da8190CB6731141fE3B8F9eb68a01#code 
+- Base : https://goerli.basescan.org/address/0x8bEAaa641B1Da8190CB6731141fE3B8F9eb68a01#code
