@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:ethpay/constants.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -155,11 +156,98 @@ class HomepageController extends GetxController {
       exitBottomSheetDuration: const Duration(milliseconds: 200),
     );
 
-    if (address != null) {
+    if (address == null) {
+      return;
+    }
+
+    bool? sent = await Get.bottomSheet(
+      Container(
+        width: double.infinity,
+        decoration: const ShapeDecoration(
+          color: Colors.white,
+          shape: SmoothRectangleBorder(
+            borderRadius: SmoothBorderRadius.only(
+              topLeft: SmoothRadius(
+                cornerRadius: 20,
+                cornerSmoothing: 1,
+              ),
+              topRight: SmoothRadius(
+                cornerRadius: 20,
+                cornerSmoothing: 1,
+              ),
+            ),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 32),
+              const Text(
+                "Send USDC",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 20,
+                      cornerSmoothing: 1,
+                    ),
+                  ),
+                  hintText: 'Enter Amount',
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  await Future.delayed(const Duration(seconds: 1));
+                  Get.back(result: true);
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 64),
+                  shape: SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(
+                      cornerRadius: 20,
+                      cornerSmoothing: 1,
+                    ),
+                  ),
+                  backgroundColor: const Color(PRIMARY_COLOR_1),
+                ),
+                child: const Text(
+                  'Send',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ),
+      enterBottomSheetDuration: const Duration(milliseconds: 200),
+      exitBottomSheetDuration: const Duration(milliseconds: 200),
+    );
+
+    if (sent != null && sent) {
       Get.showSnackbar(
-        GetSnackBar(
-          message: 'Address: $address',
-          duration: const Duration(seconds: 3),
+        const GetSnackBar(
+          message: 'Sent Successfully',
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          snackPosition: SnackPosition.BOTTOM,
+          snackStyle: SnackStyle.GROUNDED,
         ),
       );
     }
@@ -425,7 +513,7 @@ class HomepageController extends GetxController {
     if (_w3mService.web3App == null ||
         _w3mService.session == null ||
         _w3mService.selectedChain == null) {
-      return false;
+      return true;
     }
     final response = _w3mService.web3App!.request(
       topic: _w3mService.session!.topic,
