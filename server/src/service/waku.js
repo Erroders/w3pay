@@ -10,7 +10,7 @@ function sendMessage() {
   const data = {
     pusbsubTopic: 'string',
     message: {
-      payload: 'ZXhhbXBsZQ==',
+      payload: 'test',
       contentTopic: 'string',
       version: 0,
       timestamp: 0,

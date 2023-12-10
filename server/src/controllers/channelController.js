@@ -5,33 +5,6 @@ export async function createChannelController(req, res) {
   const client = await connectMongoDB();
   const db = client.db("payment_channels");
 
-  await db.collection("channels").insertMany([
-    {
-      id: uuid(),
-      from: "Alice",
-      to: "Bob",
-      amount: 100,
-      signature: "Alice's signature",
-      timestamp: 123456789,
-    },
-    {
-      id: uuid(),
-      from: "Barbara",
-      to: "Cabin",
-      amount: 120,
-      signature: "Barbara's signature",
-      timestamp: 123456789,
-    },
-    {
-      id: uuid(),
-      from: "Danniel",
-      to: "Bob",
-      amount: 150,
-      signature: "Danniel's signature",
-      timestamp: 123456789,
-    },
-  ]);
-
   res.send({
     message: "Create channel successfully!",
     data: {
