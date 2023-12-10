@@ -1,7 +1,7 @@
 {
   "mumbai": {
     "Contract": {
-      "address": "0x1Ab9Ee714166d3F80464cf40f171FA0AD5aBD030",
+      "address": "0x21FC5cA746F39D93CFA8421B424696640f838716",
       "startBlock": 43368677
     }
   },
@@ -15,6 +15,12 @@
     "Contract": {
       "address": "0xbf8d13C531aA3E491e907C38474c3bd46611f8D5",
       "startBlock": 21347549
+    }
+  },
+  "arbitrum-goerli": {
+    "Contract": {
+      "address": "0x8bEAaa641B1Da8190CB6731141fE3B8F9eb68a01",
+      "startBlock": 58558868
     }
   }
 }

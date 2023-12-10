@@ -14,14 +14,14 @@ module.exports = {
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
     arbitrumSep: {
-      url: "https://sepolia-rollup.arbitrum.io/rpc",
+      url: "https://arbitrum-goerli.publicnode.com",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
     base: {
-      url: "https://sepolia.base.org",
+      url: "https://base-goerli.blockpi.network/v1/rpc/public",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
-    scroll: {
+    scrollSepolia: {
       url: "https://sepolia-rpc.scroll.io/",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
@@ -33,13 +33,32 @@ module.exports = {
       url: "https://rpc.testnet.mantle.xyz",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
+    zeta: {
+      url: "https://zetachain-athens-evm.blockpi.network/v1/rpc/public",
+      accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
+    },
   },
   etherscan: {
-    apiKey: process.env.ZKEVMSCAN_API_KEY,
+    apiKey: "5CMRUAC3EFHJ3759UHPXUXTR9P5Q235R2A",
   },
   sourcify: {
     enabled: true,
   },
+  // etherscan: {
+  //   apiKey: {
+  //     scrollSepolia: "5CMRUAC3EFHJ3759UHPXUXTR9P5Q235R2A",
+  //   },
+  //   customChains: [
+  //     {
+  //       network: "scrollSepolia",
+  //       chainId: 534351,
+  //       urls: {
+  //         apiURL: "https://sepolia-blockscout.scroll.io/api",
+  //         browserURL: "https://sepolia-blockscout.scroll.io/",
+  //       },
+  //     },
+  //   ],
+  // },
 };
 
 /*
