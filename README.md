@@ -14,5 +14,3 @@ Token transfers on EThereum are expensive and slow. Now if L2s comes to rescue, 
 2. **Signature Exchanges**: Users exchange digitally signed messages or transactions that represent changes in their wallet balances. These messages are cryptographically secure and can be verified by the blockchain when needed.
 3. **Validation and Security**: The signatures ensure the security and authenticity of transactions without the need for immediate on-chain validation. This method speeds up transactions and reduces the load on the blockchain.
 4. **Transparency and Security**: While off-chain transactions are private between involved parties, the final settlement on the blockchain ensures transparency and immutability, providing a secure audit trail of transactions.
-
-## How it works
