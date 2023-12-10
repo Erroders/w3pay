@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Contract
-    network: polygon-zkevm-testnet
+    network: arbitrum-goerli
     source:
       abi: Contract
-      address: "0x626C1Ce3d2BE90D0FE8C48462A756D129A9A6393"
-      startBlock: 3406591
+      address: "0x8bEAaa641B1Da8190CB6731141fE3B8F9eb68a01"
+      startBlock: 58558868
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
