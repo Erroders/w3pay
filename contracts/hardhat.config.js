@@ -6,28 +6,32 @@ module.exports = {
   solidity: "0.8.20",
   networks: {
     mumbai: {
-      url: process.env.POLYGON_ALCHEMY_URL || "https://rpc.ankr.com/polygon_mumbai",
+      url: "https://polygon-mumbai-bor.publicnode.com",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
     zkevm: {
-      url: process.env.ZKEVM_ALCHEMY_URL || "https://rpc.public.zkevm-test.net",
+      url: "https://rpc.public.zkevm-test.net",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
-    arbitrum: {
-      url: process.env.ARBITRUM_ALCHEMY_URL || "https://sepolia-rollup.arbitrum.io/rpc",
+    arbitrumSep: {
+      url: "https://sepolia-rollup.arbitrum.io/rpc",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
     base: {
-      url: process.env.BASE_ALCHEMY_URL || "https://sepolia.base.org",
+      url: "https://sepolia.base.org",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
     scroll: {
-      url: process.env.SCROLL_NODE_URL || "https://sepolia-rpc.scroll.io/",
+      url: "https://sepolia-rpc.scroll.io/",
+      accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
+    },
+    celo: {
+      url: "https://alfajores-forno.celo-testnet.org",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: process.env.ZKEVMSCAN_API_KEY,
   },
   sourcify: {
     enabled: true,

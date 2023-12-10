@@ -7,7 +7,9 @@
 const hre = require("hardhat");
 
 async function main() {
-  const tokenAddress = "0xA02f6adc7926efeBBd59Fd43A84f4E0c0c91e832";
+  const tokenAddress = "0x1Ab9Ee714166d3F80464cf40f171FA0AD5aBD030"; //zkevm-inr
+  // const tokenAddress = "0x9365813b4077898a1ec058690ad898adb98dcae6"; //celo-inr
+  // const tokenAddress = "0x02964bfab37763AfC8df4dbFEa67d8965765132E"; //mumbai-inr
   const challengePeriod = 20; // buffer blocks
 
   const contract = await hre.ethers.deployContract("PaymentChannelManager", [tokenAddress, challengePeriod]);
