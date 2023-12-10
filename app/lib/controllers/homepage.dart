@@ -246,6 +246,8 @@ class HomepageController extends GetxController {
           message: 'Sent Successfully',
           duration: Duration(seconds: 3),
           backgroundColor: Colors.green,
+          snackPosition: SnackPosition.BOTTOM,
+          snackStyle: SnackStyle.GROUNDED,
         ),
       );
     }
