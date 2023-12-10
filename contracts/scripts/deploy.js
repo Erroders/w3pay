@@ -7,15 +7,20 @@
 const hre = require("hardhat");
 
 async function main() {
-    const contract = await hre.ethers.deployContract("PaymentChannel");
-    await contract.waitForDeployment();
+  const tokenAddress = "0x1Ab9Ee714166d3F80464cf40f171FA0AD5aBD030"; //zkevm-inr
+  // const tokenAddress = "0x9365813b4077898a1ec058690ad898adb98dcae6"; //celo-inr
+  // const tokenAddress = "0x02964bfab37763AfC8df4dbFEa67d8965765132E"; //mumbai-inr
+  const challengePeriod = 20; // buffer blocks
 
-    console.log(`PaymentChannel deployed to ${lock.target}`);
+  const contract = await hre.ethers.deployContract("PaymentChannelManager", [tokenAddress, challengePeriod]);
+  await contract.waitForDeployment();
+
+  console.log(`PaymentChannel deployed to ${contract.target}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
+  console.error(error);
+  process.exitCode = 1;
 });

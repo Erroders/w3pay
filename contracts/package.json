@@ -1,18 +1,22 @@
 {
-    "name": "contracts",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "deploy": "npx hardhat run scripts/deploy.ts --network mumbai"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "hardhat": "^2.19.2"
-    },
-    "dependencies": {
-        "@nomicfoundation/hardhat-toolbox": "^4.0.0"
-    }
+  "name": "contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "npx hardhat run scripts/deploy.js --network",
+    "verify": "npx hardhat verify --network"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "hardhat": "^2.19.2",
+    "prettier": "^3.1.0"
+  },
+  "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.0.1",
+    "dotenv": "^16.3.1"
+  }
 }
