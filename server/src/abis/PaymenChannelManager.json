@@ -1,0 +1,478 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_challengePeriod",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "channelid",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "walletA",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "walletB",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "walletA",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "proxyA",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceA",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "walletB",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "proxyB",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceB",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "challengePeriod",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum PaymentChannelManager.ChannelStatus",
+            "name": "status",
+            "type": "uint8"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct PaymentChannelManager.PaymentChannel",
+        "name": "pc",
+        "type": "tuple"
+      }
+    ],
+    "name": "ChannelUpdate",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "channelId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceA",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceB",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "metadata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct PaymentChannelManager.ChannelState",
+        "name": "_cs",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigA",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigB",
+        "type": "bytes"
+      }
+    ],
+    "name": "challengeCloseChannel",
+    "outputs": [
+      {
+        "internalType": "enum PaymentChannelManager.ChannelStatus",
+        "name": "status",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "channelId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceA",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceB",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "metadata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct PaymentChannelManager.ChannelState",
+        "name": "_cs",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigA",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigB",
+        "type": "bytes"
+      }
+    ],
+    "name": "closeChannel",
+    "outputs": [
+      {
+        "internalType": "enum PaymentChannelManager.ChannelStatus",
+        "name": "status",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_walletA",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_proxyA",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_walletB",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_proxyB",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "createChannel",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "channelId",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "walletA",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "proxyA",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceA",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "walletB",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "proxyB",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceB",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "challengePeriod",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum PaymentChannelManager.ChannelStatus",
+            "name": "status",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct PaymentChannelManager.PaymentChannel",
+        "name": "_pc",
+        "type": "tuple"
+      }
+    ],
+    "name": "getChannelId",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "channelId",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "channelId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceA",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceB",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "metadata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct PaymentChannelManager.ChannelState",
+        "name": "_cs",
+        "type": "tuple"
+      }
+    ],
+    "name": "getChannelStateHash",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "stateHash",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getSupportedToken",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "channelId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceA",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceB",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "metadata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct PaymentChannelManager.ChannelState",
+        "name": "_channelState",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigA",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigB",
+        "type": "bytes"
+      }
+    ],
+    "name": "isValidState",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "channelId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceA",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceB",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "metadata",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct PaymentChannelManager.ChannelState",
+        "name": "_cs",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigA",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_sigB",
+        "type": "bytes"
+      }
+    ],
+    "name": "requestCloseChannel",
+    "outputs": [
+      {
+        "internalType": "enum PaymentChannelManager.ChannelStatus",
+        "name": "status",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

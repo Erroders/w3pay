@@ -29,6 +29,10 @@ module.exports = {
       url: "https://alfajores-forno.celo-testnet.org",
       accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
     },
+    mantle: {
+      url: "https://rpc.testnet.mantle.xyz",
+      accounts: [`0x${process.env.DEPLOYER_PRIV_KEY}`],
+    },
   },
   etherscan: {
     apiKey: process.env.ZKEVMSCAN_API_KEY,
